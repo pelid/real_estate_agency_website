@@ -23,19 +23,25 @@ class Flat(models.Model):
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
     new_building = models.NullBooleanField("Новостройка", default=None)
 
-    likes = models.ManyToManyField(User, blank=True, verbose_name='Кто лайкнул')
+    likes = models.ManyToManyField(User, blank=True, verbose_name='Кто лайкнул', default=None, related_name='users')
 
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
 
 
 class Complaint(models.Model):
-    author = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Кто жаловался')
+    author = models.ForeignKey(User,
+                               null=True,
+                               blank=True,
+                               on_delete=models.CASCADE,
+                               verbose_name='Кто жаловался',
+                               related_name='authors')
     flat = models.ForeignKey(Flat,
                              null=True,
                              blank=True,
                              on_delete=models.SET_NULL,
-                             verbose_name='Квартира, на которую пожаловались')
+                             verbose_name='Квартира, на которую пожаловались',
+                             related_name='problem_flats')
     text = models.TextField("Текст жалобы:", blank=True)
 
     def __str__(self):
@@ -46,4 +52,4 @@ class Owner(models.Model):
     owner = models.CharField("ФИО владельца", max_length=200, db_index=True)
     owners_phonenumber = models.CharField("Номер владельца", max_length=20, db_index=True)
     owner_phone_pure = PhoneNumberField("Нормализованный номер владельца", blank=True, db_index=True)
-    owned_property = models.ManyToManyField(Flat, blank=True, verbose_name='Квартиры в собственности', related_name='flat', db_index=True)
+    owned_property = models.ManyToManyField(Flat, blank=True, verbose_name='Квартиры в собственности', related_name='flats')
