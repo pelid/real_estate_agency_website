@@ -23,7 +23,7 @@ class Flat(models.Model):
     construction_year = models.IntegerField("Год постройки здания", null=True, blank=True, db_index=True)
     new_building = models.NullBooleanField("Новостройка", default=None)
 
-    likes = models.ManyToManyField(User, blank=True, verbose_name='Кто лайкнул', default=None, related_name='users')
+    likes = models.ManyToManyField(User, blank=True, verbose_name='Кто лайкнул', related_name='liked_it_users', db_index=True)
 
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
